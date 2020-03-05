@@ -29,6 +29,10 @@ DEFAULT_INCLUDE_CONFIG = textwrap.dedent("""\
             # juju run -a slurm-controller 'leader-get active_controller'
         """ % SLURM_CONFIG_PATH)
 
+GRES_CONFIG_TEMPLATE = 'gres.conf'
+GRES_CONFIG_PATH = '/etc/slurm-llnl/gres.conf'
+
+
 def render_slurm_config(context, active_controller=False):
     render(source=SLURM_CONFIG_TEMPLATE,
            target=SLURM_CONFIG_PATH,
@@ -61,6 +65,13 @@ def render_munge_key(context):
            group='munge',
            perms=0o400)
 
+def render_gres_config(context):
+    render(source=GRES_CONFIG_TEMPLATE,
+        target=GRES_CONFIG_PATH,
+        context=context,
+        owner=context.get('slurm_user'),
+        group=context.get('slurm_user'),
+        perms=0o644)
 
 def create_spool_dir(context):
     if not os.path.isdir(context.get('slurmd_spool_dir')):
